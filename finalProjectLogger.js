@@ -12,13 +12,23 @@ app.get("/log", (req, res) => {
 app.post("/personal-log", (req, res) => {
   let userData = req.body;
 
+  
   if (Object.keys(userData).length === 0) {
     userData = generateSampleUserData();
   }
 
   db.push(userData);
-  res.status(200).send("User log saved");
+
+
+  console.log("Log saved:", userData);
+
+  
+  res.status(200).json({
+    message: "User log saved",
+    log: userData
+  });
 });
+
 
 function generateSampleUserData() {
   const deviceIds = ["device001", "device002", "device003", "device004"];
@@ -41,6 +51,7 @@ function generateSampleUserData() {
   };
 }
 
+
 app.listen(3000, () => {
-  console.log("Stream activated");
+  console.log("Stream started");
 });
