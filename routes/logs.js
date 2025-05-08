@@ -5,7 +5,18 @@ const Log = require('../db/log.model');
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
     try {
-        const logs = await Log.findAll();
+        console.log(req.query);
+        let whereClause = {};
+
+        if (req.query.deviceId) {
+            whereClause.deviceId = req.query.deviceId;
+        }
+
+        const logs = await Log.findAll({
+            where: {
+                ...whereClause,
+            }
+        });
         res.json(logs);
     } catch (error) {
         console.error('Error fetching logs:', error);
