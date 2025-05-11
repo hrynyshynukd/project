@@ -1,2 +1,66 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<div
+  style="display: flex; justify-content: space-between; align-items: center; gap: 32px; border-bottom: 1px solid black; padding-bottom: 16px"
+>
+  <h1>{{title}}</h1>
+  <a href="/create" class="secondary"><button>Create log record</button></a>
+</div>
+<form
+  style="display: flex; justify-content: space-between; align-items: center; gap: 32px; border-bottom: 1px solid black; padding-bottom: 16px"
+  method="POST"
+  action="/"
+>
+  <input
+    type="text"
+    name="date"
+    placeholder="Event date"
+    aria-label="Text"
+    value="{{selectedDate}}"
+  />
+  <input
+    type="text"
+    name="deviceId"
+    placeholder="Device ID"
+    aria-label="Text"
+    value="{{selectedDeviceId}}"
+  />
+  <input
+    type="text"
+    name="category"
+    placeholder="Category"
+    aria-label="Text"
+    value="{{selectedCategory}}"
+  />
+  <input
+    type="text"
+    name="description"
+    placeholder="Description"
+    aria-label="Text"
+    value="{{selectedDescription}}"
+  />
+  <input type="submit" value="Search" />
+</form>
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Event date</th>
+      <th>Device ID</th>
+      <th>Category</th>
+      <th>Description</th>
+      <th>Recorded At</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each logs as |log|}}
+      <tr>
+        <td>{{log.id}}</td>
+        <td>{{log.date}}</td>
+        <td>{{log.deviceId}}</td>
+        <td>{{log.category}}</td>
+        <td>{{log.description}}</td>
+        <td>{{log.createdAt}}</td>
+
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

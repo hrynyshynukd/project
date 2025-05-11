@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "format": "prettier --write \"./**/*.js\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -19,6 +20,7 @@
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
+    "prettier": "3.5.3",
     "sequelize-cli": "^6.6.3"
   },
   "description": "Підготували: студенти групи ІПЗс-24-2 Вікторія Гринишин, Мирослава Таркані, Анна Погорельцева, Даніїл Ковтунов. Логгер, який звітує про всі активності за зразком: час, ід пристрою, категорія, опис.",

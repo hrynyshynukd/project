@@ -1,0 +1,45 @@
+<div style="max-width: 720px; margin: 0 auto; padding: 16px">
+  <div
+    style="display: flex; justify-content: space-between; align-items: center; gap: 32px; border-bottom: 1px solid black; padding-bottom: 16px"
+  >
+    <h1>{{title}}</h1>
+    <a href="/" class="secondary"><button>Back</button></a>
+  </div>
+  <form method="POST" action="/create">
+    <fieldset>
+      <label>
+        Date
+        <input type="datetime-local" name="date" aria-label="Datetime local" />
+      </label>
+      <label>
+        Device ID
+        <input
+          type="text"
+          name="deviceId"
+          placeholder="device#1"
+          aria-label="Text"
+        />
+      </label>
+      <label>
+        Category
+        <input
+          type="text"
+          name="category"
+          placeholder="info"
+          aria-label="Text"
+        />
+      </label>
+      <label>
+        Description
+        <input
+          type="text"
+          name="description"
+          placeholder="..."
+          aria-label="Text"
+        />
+      </label>
+    </fieldset>
+
+    <input type="submit" value="Send" />
+  </form>
+</div>
