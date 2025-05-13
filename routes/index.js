@@ -1,7 +1,7 @@
 const express = require("express");
 const Log = require("../db/log.model");
 const transformLogs = require("../common/logs.transformer");
-const {Op} = require("sequelize");
+const { Op } = require("sequelize");
 const router = express.Router();
 
 router.get("/", async function (req, res, next) {
@@ -12,11 +12,9 @@ router.get("/", async function (req, res, next) {
       whereClause.deviceId = req.query.deviceId;
     }
 
-    //TODO add filters for other fields
-
-    //TODO add default order to query, do not use order by in query
-    let sortBy = req.query.sortBy || "createdAt";
-    let sortOrder = req.query.sortOrder === "desc" ? "DESC" : "ASC";
+    if (req.query.category) {
+      whereClause.category = req.query.category;
+    }
 
     if (req.query.description) {
       whereClause.description = {
@@ -24,44 +22,44 @@ router.get("/", async function (req, res, next) {
       };
     }
 
+    if (req.query.fromDateTime && req.query.toDateTime) {
+      const from = new Date(req.query.fromDateTime);
+      const to = new Date(req.query.toDateTime);
+      whereClause.date = {
+        [Op.gte]: from,
+        [Op.lte]: to,
+      };
+    }
+
+    // ❗️Сортування тільки якщо обране поле та напрям
+    let sortBy = req.query.sortBy;
+    let sortOrder = req.query.sortOrder === "desc" ? "DESC" : req.query.sortOrder === "asc" ? "ASC" : null;
+
+    const orderClause = (sortBy && sortOrder) ? [[sortBy, sortOrder]] : undefined;
+
     const logs = await Log.findAll({
-      where: {
-        ...whereClause,
-      },
-      order: [[sortBy, sortOrder]],
+      where: { ...whereClause },
+      order: orderClause,
     });
 
     res.render("index", {
       title: "Logs",
       logs: transformLogs(logs),
-      selectedDate: req.query.date,
+      selectedFrom: req.query.fromDateTime,
+      selectedTo: req.query.toDateTime,
       selectedDeviceId: req.query.deviceId,
       selectedCategory: req.query.category,
       selectedDescription: req.query.description,
+      selectedSort: sortBy,
+      selectedOrder: sortOrder ? sortOrder.toLowerCase() : "",
     });
   } catch (error) {
     console.error("Error fetching logs:", error);
-    //TODO add error on page
-    res.render("??", { error: error.message });
-  }
-});
-
-router.post("/", async function (req, res, next) {
-  try {
-    const { date, deviceId, category, description } = req.body;
-    console.log({ date, deviceId, category, description });
-    const params = new URLSearchParams({
-      date,
-      deviceId,
-      category,
-      description,
+    res.render("index", {
+      title: "Logs",
+      logs: [],
+      error: error.message,
     });
-
-    res.redirect(`/?${params}`);
-  } catch (error) {
-    console.error("Error fetching logs:", error);
-    //TODO add error on page
-    res.render("??", { error: error.message });
   }
 });
 
@@ -70,8 +68,10 @@ router.get("/create", async function (req, res, next) {
     res.render("create-log", { title: "Create Log" });
   } catch (error) {
     console.error("Error rendering create log page:", error);
-    //TODO add error on create log page
-    res.render("??", { error: error.message });
+    res.render("create-log", {
+      title: "Create Log",
+      error: error.message,
+    });
   }
 });
 
@@ -79,12 +79,14 @@ router.post("/create", async function (req, res, next) {
   const { date, deviceId, category, description } = req.body;
 
   try {
-    const log = await Log.create({ date, deviceId, category, description });
+    await Log.create({ date, deviceId, category, description });
     res.redirect("/");
   } catch (error) {
     console.error("Error creating log:", error);
-    //TODO add error on create log page
-    res.render("??", { error: error.message });
+    res.render("create-log", {
+      title: "Create Log",
+      error: error.message,
+    });
   }
 });
 

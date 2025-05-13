@@ -3,8 +3,14 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-require('dotenv').config();
+require("dotenv").config();
 
+const hbs = require("hbs");
+
+// ✅ Реєстрація хелпера для Handlebars
+hbs.registerHelper("ifEquals", function (arg1, arg2, options) {
+  return arg1 === arg2 ? options.fn(this) : options.inverse(this);
+});
 
 const indexRouter = require("./routes/index");
 
