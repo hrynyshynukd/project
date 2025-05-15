@@ -31,7 +31,6 @@ router.get("/", async function (req, res, next) {
       };
     }
 
-    // ❗️Сортування тільки якщо обране поле та напрям
     let sortBy = req.query.sortBy;
     let sortOrder = req.query.sortOrder === "desc" ? "DESC" : req.query.sortOrder === "asc" ? "ASC" : null;
 
